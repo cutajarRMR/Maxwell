@@ -30,6 +30,6 @@ jobs:
 
       - name: Send email with result.txt
         env:
-          GMAIL_USERNAME: ${{ secrets.GMAIL_USERNAME }}
-          GMAIL_PASSWORD: ${{ secrets.GMAIL_PASSWORD }}
+          GMAIL_USERNAME: ${{ secrets.GMAIL_USER }}
+          GMAIL_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
         run: python send_email.py
