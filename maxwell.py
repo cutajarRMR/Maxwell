@@ -76,7 +76,6 @@ def will_rain_openmeteo(lat, lon, forecast_days, range_start, range_end):
 class maxwell:
     
     from datetime import datetime
-    import pandas as pd
     
     def __init__(self, name):
         self.name = name
@@ -120,4 +119,5 @@ if __name__ == "__main__":
     file = maxwell_summary()
     
     with open("result.txt", "w") as f:
+
         f.write(file)
