@@ -9,9 +9,9 @@ with open("result.txt", "r") as f:
     body = f.read()
 
 # Email details
-sender = os.environ["GMAIL_USERNAME"]
+sender = os.environ["GMAIL_USER"]
 receiver = "anthony.j.cutajar@gmail.com; danielle.e.horner@gmail.com"  # or another recipient
-password = os.environ["GMAIL_PASSWORD"]  # or GMAIL_APP_PASSWORD
+password = os.environ["GMAIL_APP_PASSWORD"]  # or GMAIL_APP_PASSWORD
 
 msg = MIMEText(body)
 msg["Subject"] = "Maxwell Summary"
