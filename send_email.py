@@ -16,7 +16,7 @@ password = os.environ["GMAIL_PASSWORD"]  # or GMAIL_APP_PASSWORD
 msg = MIMEText(body)
 msg["Subject"] = "Maxwell Summary"
 msg["From"] = sender
-msg["To"] = receiver
+msg["To"] = ", ".join(receiver)
 
 # Send email
 with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
