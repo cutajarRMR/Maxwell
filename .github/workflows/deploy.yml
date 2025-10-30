@@ -23,6 +23,8 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run maxwell.py
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: python maxwell.py
 
       - name: Send email with result.txt
