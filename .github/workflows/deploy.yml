@@ -3,6 +3,7 @@ name: Deploy Maxwell and Send Email
 on:
   schedule:
     - cron: '0 17 * * *'
+  workflow_dispatch:
 
 jobs:
   deploy:
