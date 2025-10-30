@@ -11,10 +11,6 @@ load_dotenv()
 #os.getenv("OpenAI_API_KEY")
 
 
-llm = ChatOpenAI(
-    model="gpt-4o",
-    api_key =os.environ["OPENAI_API_KEY"])
-
 @tool
 def will_rain_openmeteo(lat, lon, forecast_days, range_start, range_end):
     """
@@ -80,7 +76,7 @@ class maxwell:
     def __init__(self, name):
         self.name = name
         self.dob = None
-        self.llm = ChatOpenAI(model="gpt-4o",api_key =os.getenv("OpenAI_API_KEY"))
+        self.llm = ChatOpenAI(model="gpt-4o",api_key =os.environ["OPENAI_API_KEY"])
     
     def worm_max(self):
         
