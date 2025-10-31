@@ -10,7 +10,7 @@ with open("result.txt", "r") as f:
 
 # Email details
 sender = os.environ["GMAIL_USERNAME"]
-receiver = ["anthony.j.cutajar@gmail.com", "danielle.e.horner@gmail.com"]  # or another recipient
+receiver = ["anthony.j.cutajar@gmail.com"]  # or another recipient
 password = os.environ["GMAIL_PASSWORD"]  # or GMAIL_APP_PASSWORD
 
 msg = MIMEText(body)
