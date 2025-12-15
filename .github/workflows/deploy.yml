@@ -26,10 +26,6 @@ jobs:
       - name: Run maxwell.py
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        run: python maxwell.py
-
-      - name: Send email with result.txt
-        env:
           GMAIL_USERNAME: ${{ secrets.GMAIL_USER }}
           GMAIL_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
-        run: python send_email.py
+        run: python maxwell.py
