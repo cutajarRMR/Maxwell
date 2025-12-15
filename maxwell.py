@@ -5,10 +5,9 @@ import os
 from langchain.tools import tool
 from langchain.agents import create_agent
 from langchain_openai import ChatOpenAI
+import smtplib
+from email.mime.text import MIMEText
 load_dotenv()
-
-
-#os.getenv("OpenAI_API_KEY")
 
 
 @tool
@@ -66,54 +65,64 @@ def will_rain_openmeteo(lat, lon, forecast_days, range_start, range_end):
 
     return total_precip
 
-
-#will_rain_openmeteo(lat=-37.713, lon=144.927, forecast_days=1, range_start=17, range_end=19)
-
-class maxwell:
-    
-    from datetime import datetime
-    
-    def __init__(self, name):
-        self.name = name
-        self.dob = None
-        self.llm = ChatOpenAI(model="gpt-4o",api_key =os.environ["OPENAI_API_KEY"])
-    
-    def worm_max(self):
-        
-        def is_end_of_month(date: datetime) -> bool:
-            """
-            Returns True if the date is between the 26th and the last day of the month (inclusive).
-            """
-            last_day = 31
-            return 26 <= date.day <= last_day
-        
-        if is_end_of_month(datetime.today()):
-            return "Maxwell needs to be wormed."
-        else:
-            return None
-        
-    def walk_max(self):
-        agent = create_agent(self.llm, tools=[will_rain_openmeteo])
-        walkplan = agent.invoke(
-            {"messages": [{"role": "system", "content": "You are a helpful assistant that provides weather advice based on precipitation forecasts for when I should walk my dog Maxwell. Just reutrn the final answer without any additional commentary."}
-                         ,{"role": "user"  , "content": "Will it rain in Glenroy tomorrow between 5pm and 7pm? If so, suggest an alternative time to walk Maxwell. Options are tomorrow morning between 6am and 7am, or the following day (2 days way) between 6am and 7am."}]}
-        )
-        
-        return walkplan['messages'][-1].content
-    
-    
-def maxwell_summary():
-    max = maxwell("Maxwell")
-    file = f"""{max.name}:
-    {max.worm_max()}
-
-    {max.walk_max()}
+@tool
+def worm_max():
     """
-    return file
+    Returns True if Maxwell needs to be wormed (between 26th and end of month).
+    """
+    def is_end_of_month(date: datetime) -> bool:
+        """
+        Returns True if the date is between the 26th and the last day of the month (inclusive).
+        """
+        last_day = 31
+        return 26 <= date.day <= last_day
+    
+    if is_end_of_month(datetime.today()):
+        return True
+    else:
+        return False
+
+@tool
+def send_user_email(body :str):
+    """
+    Docstring for send_user_email
+    
+    :param body: Information to include in the email body
+    
+    Sends an email with the provided body content to a predefined recipient.
+    """
+    # Email details
+    sender = os.environ["GMAIL_USERNAME"]
+    receiver = ["anthony.j.cutajar@gmail.com"]  # or another recipient
+    password = os.environ["GMAIL_PASSWORD"]  # or GMAIL_APP_PASSWORD
+
+    msg = MIMEText(body)
+    msg["Subject"] = "Maxwell Summary"
+    msg["From"] = sender
+    msg["To"] = ", ".join(receiver)
+
+    # Send email
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+        server.login(sender, password)
+        server.sendmail(sender, receiver, msg.as_string())
+
 
 if __name__ == "__main__":
-    file = maxwell_summary()
-    
-    with open("result.txt", "w") as f:
 
-        f.write(file)
+    tools = [will_rain_openmeteo, worm_max, send_user_email]
+
+    agent_max = create_agent(ChatOpenAI(model="gpt-4o",api_key =os.environ["OPENAI_API_KEY"]), 
+                tools=tools,
+                system_prompt="""You are a helpful assistant for caring for my dog Maxwell.
+    Use the available tools to provide accurate information about whether Maxwell needs to be wormed this month and whether it will rain during his walk time.
+    If it will rain in Glenroy Victoria Australia tomorrow between 5pm and 7pm, suggest alternative walk times. Options are tomorrow morning between 6am and 7am, or the following day (2 days way) between 6am and 7am.
+    If an alternative time is suggested or Maxwell needs to be warmed, use the send_user_email tool to email me the details.
+    Do not send an email if no action is needed.""")
+
+
+    walkplan = agent_max.invoke(
+                {"messages": [{"role": "user"  , "content": "Perform Maxwell's daily care check"}]}
+            )
+    #print(walkplan)
+    #for step in walkplan['messages']:
+    #    print(step)
